@@ -1,7 +1,31 @@
+# SPDX-License-Identifier: MIT
+#
+# Copyright (c) 2024 Egor Solyanik
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 import os
-from random import choice
 
 know_snail: bool = False
+shutted_cameras: bool = False
+got_database: bool = False
+hidden_guard: bool = False
 
 
 def sep():
@@ -26,8 +50,11 @@ def main():
 
 def start(fail=True):
     if fail:
-        global know_snail
+        global know_snail, shutted_cameras, got_database, hidden_guard
         know_snail = False
+        shutted_cameras = False
+        got_database = False
+        hidden_guard = False
 
     sep()
     print(open("start.txt", encoding="utf-8").read())
@@ -210,20 +237,20 @@ def building():
     choice = input("Ваш выбор (введите номер): ")
 
     if choice == "1":
-        pass_buildind()
+        pass_building()
     elif choice == "2":
-        talk_building()
-    elif choice == "3":
         ventil_building()
+    elif choice == "3":
+        talk_building()
     else:
         strong("Некорректный выбор. Попробуйте снова.")
         input()
         building()
 
 
-def pass_buildind():
+def pass_building():
     sep()
-    print(open("pass_buildind.txt", encoding="utf-8").read())
+    print(open("pass_building.txt", encoding="utf-8").read())
 
     strong("Квест провален.")
     strong("Нажмите Enter, чтобы начать сначала...")
@@ -248,15 +275,249 @@ def ventil_building():
     choice = input("Ваш выбор (введите номер): ")
 
     if choice == "1":
-        ventil_1()
+        sneak_bot()
     elif choice == "2":
-        ventil_2()
+        talk_bot()
     elif choice == "3":
-        ventil_3()
+        poweroff_bot()
     else:
         strong("Некорректный выбор. Попробуйте снова.")
         input()
         ventil_building()
+
+
+def sneak_bot():
+    sep()
+    print(open("sneak_bot.txt", encoding="utf-8").read())
+
+    strong("Квест провален.")
+    strong("Нажмите Enter, чтобы начать сначала...")
+    input()
+    start()
+
+
+def talk_bot():
+    sep()
+    print(open("talk_bot.txt", encoding="utf-8").read())
+
+    choice = input("Ваш выбор (введите номер): ")
+
+    if choice == "1":
+        help_bot()
+    elif choice == "2":
+        lie_bot()
+    else:
+        strong("Некорректный выбор. Попробуйте снова.")
+        input()
+        talk_bot()
+
+
+def help_bot():
+    global got_database
+    global shutted_cameras
+    sep()
+    print(open("help_bot.txt", encoding="utf-8").read())
+
+    choice = input("Ваш выбор (введите номер): ")
+
+    if choice == "1":
+        if shutted_cameras:
+            sep()
+            print("Хотя вы только что выключили камеры, вы почему-то решили сделать это снова. Это было роковой тратой времени - вас заметили и подняли тревогу...")
+            strong("Квест провален.")
+            strong("Нажмите Enter, чтобы начать сначала...")
+            input()
+            start()
+        else:
+            shutted_cameras = True
+            shut_cameras()
+            help_bot()
+    elif choice == "2":
+        if got_database:
+            sep()
+            print(
+                "Хотя вы только что взломали базы данных, вы почему-то решили сделать это снова. Это было роковой тратой времени - вас заметили и подняли тревогу...")
+            strong("Квест провален.")
+            strong("Нажмите Enter, чтобы начать сначала...")
+            input()
+            start()
+        else:
+            got_database = True
+            database()
+            help_bot()
+    elif choice == "3":
+        codes()
+    elif choice == "4":
+        if not got_database:
+            sep()
+            print("Вы решаете пробраться к главному залу, не зная точно, что там происходит. Прячьтесь за углами, стараясь избегать камер, и пытаетесь наугад найти нужный путь. Всё выглядит одинаково: бесконечные коридоры, закрытые двери, странные знаки на стенах.")
+            print()
+            print("Наконец, вам удаётся добраться до большого помещения, которое кажется важным. Но вместо зала для собраний вы обнаруживаете склад с канистрами технических жидкостей и ящиками с запчастями для роботов. И тут раздаётся тревожный сигнал: вы зашли не туда.")
+            print()
+            print("— Незарегистрированный доступ! Посторонний в зоне хранения! — снова звучит голос системы безопасности.")
+            print()
+            print("Через мгновение дверь захлопывается за вашей спиной, блокируя выход. Снаружи слышны шаги охраны, приближающиеся с явной решимостью вас поймать.")
+            print()
+            print("Вы не смогли найти правильный путь и оказались в ловушке. Дело плохо.")
+            print()
+
+            strong("Квест провален.")
+            strong("Нажмите Enter, чтобы начать сначала...")
+            input()
+            start()
+        elif not shutted_cameras:
+            sep()
+            print("Вы, стараясь держаться в тени, осторожно продвигаетесь по коридору в сторону главного зала. Путь кажется свободным, но вы замечаете несколько камер, следящих за каждым движением.")
+            print()
+            print("Игнорируя их, вы продолжаете идти, надеясь, что никто не обратит внимания на непрошеного гостя. Но не тут-то было. Вдруг из динамиков раздается металлический голос системы безопасности:")
+            print()
+            print("— Обнаружен посторонний. Идентификация не пройдена. Служба безопасности, реагировать немедленно.")
+            print()
+            print("Через секунду из-за угла выскакивают несколько охранников с парализующими пистолетами. Вас окружают и, не успев сделать и шага, вы оказываетесь пойманным.")
+
+            strong("Квест провален.")
+            strong("Нажмите Enter, чтобы начать сначала...")
+            input()
+            start()
+        else:
+            main_hall()
+    elif choice == "52":
+        sep()
+        print("Семь бед - один ответ: костыль и велосипед!")
+        input()
+        help_bot()
+    else:
+        strong("Некорректный выбор. Попробуйте снова.")
+        input()
+        help_bot()
+
+
+def main_hall():
+    global hidden_guard
+    sep()
+    print(open("main_hall.txt", encoding="utf-8").read())
+
+    choice = input("Ваш выбор (введите номер): ")
+
+    if choice == "1":
+        if not hidden_guard:
+            pass_guard_fail()
+        else:
+            pass_guard_success()
+    elif choice == "2":
+        ventil_guard()
+    elif choice == "3":
+        if not hidden_guard:
+            hidden_guard = True
+            hidden_success()
+            main_hall()
+        else:
+            hidden_fail()
+    else:
+        strong("Некорректный выбор. Попробуйте снова.")
+        input()
+        main_hall()
+
+
+def hidden_success():
+    sep()
+    print(open("hidden_success.txt", encoding="utf-8").read())
+
+    strong("Нажмите Enter, чтобы начать продолжить...")
+    input()
+
+
+def hidden_fail():
+    sep()
+    print(open("hidden_fail.txt", encoding="utf-8").read())
+
+    strong("Квест провален.")
+    strong("Нажмите Enter, чтобы начать сначала...")
+    input()
+    start()
+
+
+def pass_guard_success():
+    sep()
+    print(open("pass_guard_success.txt", encoding="utf-8").read())
+
+    strong("Нажмите Enter, чтобы начать продолжить...")
+    input()
+    end()
+
+
+def end():
+    sep()
+    print(open("end.txt", encoding="utf-8").read())
+
+    strong("Задание выполнено, пора лететь на планету Земля за вознаграждением...")
+    input()
+
+
+def pass_guard_fail():
+    sep()
+    print(open("pass_guard_fail.txt", encoding="utf-8").read())
+
+    strong("Квест провален.")
+    strong("Нажмите Enter, чтобы начать сначала...")
+    input()
+    start()
+
+
+def ventil_guard():
+    sep()
+    print(open("ventil_guard.txt", encoding="utf-8").read())
+
+    strong("Жизнь великого рейнджера закончилась.")
+    strong("Нажмите Enter, чтобы начать сначала...")
+    input()
+    start()
+
+
+def codes():
+    sep()
+    print(open("codes.txt", encoding="utf-8").read())
+
+    strong("Квест провален.")
+    strong("Нажмите Enter, чтобы начать сначала...")
+    input()
+    start()
+
+
+def database():
+    sep()
+    print(open("database.txt", encoding="utf-8").read())
+
+    strong("Нажмите Enter для продолжения...")
+    input()
+
+
+def shut_cameras():
+    sep()
+    print(open("shut_cameras.txt", encoding="utf-8").read())
+
+    strong("Нажмите Enter для продолжения...")
+    input()
+
+
+def lie_bot():
+    sep()
+    print(open("lie_bot.txt", encoding="utf-8").read())
+
+    strong("Квест провален.")
+    strong("Нажмите Enter, чтобы начать сначала...")
+    input()
+    start()
+
+
+def poweroff_bot():
+    sep()
+    print(open("poweroff_bot.txt", encoding="utf-8").read())
+
+    strong("Квест провален.")
+    strong("Нажмите Enter, чтобы начать сначала...")
+    input()
+    start()
 
 
 def pass_snail():
